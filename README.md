@@ -4,6 +4,14 @@
 
 A small app to manage, track and download videos for offline use.
 
+## TODO
+
+- [x] Save Video to DB
+- [ ] Display Saved Vidoes
+- [ ] Download Saved Videos
+- [ ] Add Tagging + Metadata to Videos
+- [ ] Add Support for non Ytube Videos
+
 ## Instalation
 
 To install dependencies:
