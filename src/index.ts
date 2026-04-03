@@ -1,14 +1,28 @@
 import { serve } from "bun";
 import index from "./frontend/index.html";
-import { db, initDB } from "./server/sql";
-
-
-initDB();
+import db from "./server/sql";
 
 const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
     "/*": index,
+
+    "/save": {
+      async PUT(req) {
+        const body = await req.json();
+        
+        if(body.url) {
+          db.run("INSERT INTO videos (url) VALUES (?)", body.url);
+          
+          return Response.json({
+            message: "SAVED",
+            method: "PUT",
+          });
+        }
+
+        return Response.json({ error: "Save failed" }, { status: 400 });
+      },
+    },
 
     "/api/hello": {
       async GET(req) {

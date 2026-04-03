@@ -1,37 +1,53 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/frontend/components/ui/card";
-import { APITester } from "../frontend/components/APITester";
+import { useState } from "react";
+import { Input } from "./components/ui/input";
 import "./index.css";
-
-import logo from "./logo.svg";
-import reactLogo from "./react.svg";
+import { Button } from "./components/ui/button";
+import { getThumbnail } from "./lib/thumbnail";
 
 export function App() {
+  const [url, setUrl] = useState<string>("");
+  const [thumb, setThumb] = useState<string | null>(null);
+
+  const handleSubmit = () => {
+    const img = getThumbnail(url)
+    setThumb(img);
+  };
+
+  const handleSave = async () => {
+    await fetch('/save', {
+      method: "PUT",
+      body: JSON.stringify({ url: url })
+    })
+  }
+
   return (
-    <div className="container mx-auto p-8 text-center relative z-10">
-      <div className="flex justify-center items-center gap-8 mb-8">
-        <img
-          src={logo}
-          alt="Bun Logo"
-          className="h-36 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#646cffaa] scale-120"
+    <div className="container mx-auto p-8 text-center">
+      <h1 className="text-xl font-bold mb-4">
+        Video DB
+      </h1>
+
+      <div className="flex gap-2 justify-center">
+        <Input
+          type="text"
+          placeholder="https://youtube.com/watch?v=..."
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
         />
-        <img
-          src={reactLogo}
-          alt="React Logo"
-          className="h-36 p-6 transition-all duration-300 hover:drop-shadow-[0_0_2em_#61dafbaa] [animation:spin_20s_linear_infinite]"
-        />
+
+        <Button onClick={handleSubmit}>Get Thumbnail</Button>
       </div>
-      <Card>
-        <CardHeader className="gap-4">
-          <CardTitle className="text-3xl font-bold">Bun + React</CardTitle>
-          <CardDescription>
-            Edit <code className="rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono">src/App.tsx</code> and save to
-            test HMR
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <APITester />
-        </CardContent>
-      </Card>
+
+      {thumb && (
+        <div className="flex flex-col gap-2 mt-6">
+          <img
+            src={thumb}
+            alt="YouTube thumbnail"
+            className="rounded-lg shadow-lg mx-auto"
+          />
+
+          <Button onClick={handleSave} variant={"outline"}>Save</Button>
+        </div>
+      )}
     </div>
   );
 }
