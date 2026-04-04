@@ -3,6 +3,8 @@ import { Input } from "./components/ui/input";
 import "./index.css";
 import { Button } from "./components/ui/button";
 import { getThumbnail } from "./lib/thumbnail";
+import { toast, Toaster } from "sonner"
+import API from "./lib/fetch";
 
 export function App() {
   const [url, setUrl] = useState<string>("");
@@ -14,10 +16,19 @@ export function App() {
   };
 
   const handleSave = async () => {
-    await fetch('/save', {
+    const result = await API.fetch('/save', {
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ url: url })
     })
+    if(result.ok) {
+      toast("Saved successfully");
+    }
+    else {
+      toast.error(result.error.message,);
+    }
   }
 
   return (
@@ -48,6 +59,7 @@ export function App() {
           <Button onClick={handleSave} variant={"outline"}>Save</Button>
         </div>
       )}
+      <Toaster />
     </div>
   );
 }

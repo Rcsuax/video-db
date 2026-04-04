@@ -1,6 +1,6 @@
 import { serve } from "bun";
 import index from "./frontend/index.html";
-import db from "./server/sql";
+import db from "./server/db";
 
 const server = serve({
   routes: {
@@ -9,18 +9,30 @@ const server = serve({
 
     "/save": {
       async PUT(req) {
-        const body = await req.json();
-        
-        if(body.url) {
-          db.run("INSERT INTO videos (url) VALUES (?)", body.url);
-          
-          return Response.json({
-            message: "SAVED",
-            method: "PUT",
-          });
-        }
+        try {
+          const body = await req.json();
+          if(body.url) {
+            db.run("INSERT INTO videos (url) VALUES (?)", body.url);
+            
+            return Response.json({ message: "SAVED" });
+          }
+          return Response.json({ error: "MALFORMED_REQUEST" }, { status: 400 });
+        } 
+        catch (error) {
+          const message = String(error);
 
-        return Response.json({ error: "Save failed" }, { status: 400 });
+          if (message.includes("UNIQUE")) {
+            return Response.json(
+              { error: "URL_ALREADY_EXISTS" },
+              { status: 409 }
+            );
+          }
+
+          return Response.json(
+            { error: "INTERNAL_SERVER_ERROR" },
+            { status: 500 }
+          );
+        }
       },
     },
 
