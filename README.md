@@ -8,8 +8,8 @@ A small app to manage, track and download videos for offline use.
 
 - [x] Save Video to DB
 - [ ] Display Saved Vidoes
-- [ ] Download Saved Videos
-- [ ] Add Video Player to play saved Video / stream Videos
+- [ ] Download Saved Videos /
+- [ ] Add Video Player to play Saved Video / stream Videos
 - [ ] Add Tagging + Metadata to Videos
 - [ ] Add Support for non Ytube Videos
 

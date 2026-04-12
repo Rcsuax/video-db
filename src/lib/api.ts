@@ -1,5 +1,3 @@
-// import { fetch } from "bun";
-
 export class APIError<T = {}> extends Error {
   readonly data: T | undefined;
 

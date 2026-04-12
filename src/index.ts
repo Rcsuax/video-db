@@ -1,13 +1,36 @@
 import { serve } from "bun";
-import index from "./frontend/index.html";
-import db from "./server/db";
+import homepage from "./frontend/index.html";
+import db from "./backend/db";
+
+// const router = new Bun.FileSystemRouter({
+//   style: "nextjs",
+//   dir: "./pages/",
+// });
 
 const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
-    "/*": index,
+    "/": homepage,
+    // "/": {
+    //   async GET(req) {
+    //     let match = router.match(req);
+    //     if(!match) return Response.json({ error: "PAGE_NOT_FOUND" }, { status: 404 });
+        
+    //     let page = require(match.filePath);
+    //     return new (page)(req, match.query, match.params);
+    //   }
+    // },
 
-    "/save": {
+    "/api/video": {
+      async GET(req) {
+        const query = db.query(`SELECT url from videos`);
+        const results = query.all();
+        console.log("reuslts", results)
+        return Response.json({ videos: results });
+      },
+    },
+
+    "/api/video/save": {
       async PUT(req) {
         try {
           const body = await req.json();
@@ -34,28 +57,6 @@ const server = serve({
           );
         }
       },
-    },
-
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
-
-    "/api/hello/:name": async req => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
     },
   },
 
