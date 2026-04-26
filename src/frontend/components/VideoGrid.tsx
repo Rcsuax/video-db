@@ -34,7 +34,7 @@ const VideoGrid = () => {
 
 
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <section className="grid grid-cols-1 md:grid-cols-4 gap-2">
       { videos.map( (video, index) => {
         return (
           <a
@@ -51,7 +51,7 @@ const VideoGrid = () => {
           </a>
         )
       })}
-    </div>
+    </section>
   )
 }
 
